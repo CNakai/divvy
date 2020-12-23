@@ -1,0 +1,102 @@
+* Grading assign
+** Inputs & Outputs
+*** Arguments
++ BBLearn zip file
+
+*** Options
++ Group size
+
+*** Outputs
++ JSON File mapping students to who they are grading and to who they are graded by
+
+** Constraints
++ Ensure no reciprocity?
+
+* Grading package
+** Inputs & Outputs
+*** Arguments
++ BBLearn zip file
++ grading group file
+
+*** Options
++ rubric file(s)
++ grading instructions file(s)
++ assignment name override
+
+*** Outputs
+A collection of zip files, one per grader, each containing the submission
+directories of all the students they are supposed to grade with rubrics and
+instructions included:
+
+jkl321_grading_for_hwk1.zip
+├── GRADING_INSTRUCTIONS.txt
+├── ghi789
+│   ├── submission_file3.txt
+│   ├── submission_file2.txt
+│   ├── submission_file1.txt
+│   ├── rubric_1__gradee_ghi789.json
+│   └── rubric_2__gradee_ghi789.json
+├── def456
+│   ├── submission_file3.txt
+│   ├── submission_file2.txt
+│   ├── submission_file1.txt
+│   ├── rubric_1__gradee_def456.json
+│   └── rubric_2__gradee_def456.json
+└── abc123
+├── submission_file3.txt
+├── submission_file2.txt
+├── submission_file1.txt
+├── rubric_1__gradee_abc126.json
+└── rubric_2__gradee_abc126.json
+
+*** Constraints
++ Rubric filenames will be prefixed with the id of the student they are for
++ The zipfiles will be labeled as "<id>__grading_for_<assignment>.zip"
+
+* Grading send
+** Inputs & Outputs
+*** Arguments
++ Directory containing zipfiles to send out
+
+*** Options
++ Assignment name
++ Grading due date
+
+*** Prompt
++ Username (gmail account)
++ Password
+
+*** Outputs
++ Sending messages
+
+* Rubrics collate
+*** Arguments
++ BBLearn file for rubric submissions
+
+*** Outputs
++ A folder with all the rubric files renamed according to the scheme
+  "grader_<grader_id>__rubricfilename__gradee_<gradee_id>.fileextension"
+
+* Rubrics send
+** Inputs & Outputs
+*** Arguments
++ Directory containing collated rubrics
+
+*** Options
++ Assignment name
+
+*** Prompt
++ Username (gmail account)
++ Password
+
+*** Outputs
++ Sending messages
+
+* Rubrics evaluate
+** Inputs & Outputs
+*** Arguments
++ Folder of collated rubrics
++ Command
+
+*** Prompts
++ Graders or gradees?
