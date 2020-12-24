@@ -67,19 +67,19 @@ def assign(submission_zip, number_to_grade, outfile_name):
         ids = list(set(ids))
         shuffle(ids)
 
-    graders_to_gradees = {}
-    gradees_to_graders = {}
+    grader_to_gradees = {}
+    gradee_to_graders = {}
     # The trick with the next line and the for loop simulates "looped slicing"
     ids = ids[-number_to_grade:] + ids + ids[:number_to_grade]
     for (i, id) in list(enumerate(ids))[number_to_grade:-number_to_grade]:
-        graders_to_gradees[id] = ids[i+1:i+number_to_grade+1]
-        gradees_to_graders[id] = ids[i-number_to_grade:i]
+        grader_to_gradees[id] = ids[i+1:i+number_to_grade+1]
+        gradee_to_graders[id] = ids[i-number_to_grade:i]
 
     with open(outfile_name, 'w') as grading_assignment_file:
         dump(
             {
-                'graders_to_gradees': graders_to_gradees,
-                'gradees_to_graders': gradees_to_graders
+                'grader_to_gradees': grader_to_gradees,
+                'gradee_to_graders': gradee_to_graders
             },
             grading_assignment_file,
             indent=4
