@@ -1,6 +1,6 @@
 import click
 from .assign import assign
-# from .package import package
+from .package import package
 # from .send import send
 
 
@@ -11,7 +11,7 @@ def __grading():
 
 
 __grading.add_command(assign)
-# __grading.add_command(package)
+__grading.add_command(package)
 # __grading.add_command(send)
 
 command_group = [__grading]
