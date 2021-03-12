@@ -1,4 +1,4 @@
-from .util import extract_student_id, remove_bblearn_prefix
+from ..bblearn_submission_utils import refile_files_by_submitter
 import click
 from json import load
 from os import mkdir, scandir, rename
@@ -136,7 +136,7 @@ def package(submission_zip, grading_assignment_file, rubrics,
         print(f"Creating directory {output_dir}")
         mkdir(output_dir)
         print("Done!")
-    elif len(scandir(output_dir)) != 0:
+    elif len(list(scandir(output_dir))) != 0:
         print(f"The directory {output_dir} is not empty!")
         exit(1)
 
@@ -169,32 +169,6 @@ def package(submission_zip, grading_assignment_file, rubrics,
 
     if unassigned_gradees != []:
         print(unassigned_gradees_notice.format(len(unassigned_gradees)))
-
-
-def refile_files_by_submitter(submission_directory):
-    """
-    Creates per student subdirectories within the submission_directory and
-    moves each students files into their directory
-    """
-    submission_file_entries = sorted(
-        list(scandir(submission_directory)),
-        key=lambda entry: extract_student_id(entry.name)
-    )
-
-    for entry in submission_file_entries:
-        id = extract_student_id(entry.name)
-        student_directory = join(submission_directory, id)
-
-        if not exists(student_directory):
-            mkdir(student_directory)
-
-        new_path = join(student_directory, remove_bblearn_prefix(entry.name))
-        rename(entry.path, new_path)
-
-    for student_directory_entry in scandir(submission_directory):
-        student_directory = student_directory_entry.path
-        for cruft in ['__MACOSX', '.DS_store']:
-            rmtree(join(student_directory, cruft), ignore_errors=True)
 
 
 def distribute_rubrics(output_dir, rubrics, assignment_name):
@@ -234,7 +208,8 @@ def refile_submissions_by_grader(output_dir, gradee_to_graders,
 
 def package_grader_dirs(output_dir, grading_instructions):
     for grader_entry in scandir(output_dir):
-        copy(grading_instructions, grader_entry.path)
+        if grading_instructions:
+            copy(grading_instructions, grader_entry.path)
         make_archive(
             grader_entry.path,
             'zip',

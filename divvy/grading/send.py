@@ -1,10 +1,6 @@
-from .util import extract_student_id, remove_bblearn_prefix
-
 import click
 from email.message import EmailMessage
 from mimetypes import guess_type
-from os import mkdir, scandir, rename
-from os.path import abspath, basename, exists, join, split
 import pathlib
 import smtplib
 from sys import exit

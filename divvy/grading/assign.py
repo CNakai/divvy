@@ -1,4 +1,4 @@
-from .util import extract_student_id
+from ..bblearn_submission_utils import extract_student_id
 import click
 from json import dump
 from os.path import abspath, exists, join, split
