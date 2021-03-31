@@ -1,6 +1,7 @@
 import click
-# from .collate import collate
-# from .evaluate import evaluate
+from .collate import collate
+from .evaluate import evaluate
+from .synthesize import synthesize
 # from .send import send
 
 
@@ -10,8 +11,9 @@ def __rubrics():
     pass
 
 
-# __grading.add_command(collate)
-# __grading.add_command(evaluate)
-# __grading.add_command(send)
+__rubrics.add_command(collate)
+__rubrics.add_command(evaluate)
+__rubrics.add_command(synthesize)
+# __rubrics.add_command(send)
 
 command_group = [__rubrics]

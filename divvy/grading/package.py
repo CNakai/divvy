@@ -1,11 +1,11 @@
-from ..bblearn_submission_utils import refile_files_by_submitter
+# TODO: Simplifying assumption make the alias always the thing immediately
+# following a __
 import click
 from json import load
-from os import mkdir, scandir, rename
-from os.path import abspath, basename, exists, join, split
+from os import mkdir
+from pathlib import Path
 from shutil import copy, copytree, make_archive, rmtree
 from sys import exit
-from zipfile import is_zipfile, ZipFile
 
 
 unassigned_gradees_notice = """
@@ -29,191 +29,240 @@ NOTICE: There were {0} students who had a submission in the submission file but
 
 
 @click.command()
-@click.argument('submission-zip')
+@click.argument('submission-dir')
 @click.argument('grading-assignment-file')
 @click.option(
-    '--rubric', '-r', 'rubrics',
+    '--per-gradee', '-e', 'per_gradee_files',
     multiple=True,
     type=click.Path(exists=True, dir_okay=False,
                     readable=True, resolve_path=True),
     help="""
-    A path to a file containing a rubric.  This file will be copied into every
-    student submission directory in every zipfile.  When it is copied, the
-    filename will be changed according to the following scheme:
+    A file which should be included once for each gradee (like a blank rubric).
+    This file will be copied into every gradee's submission directory in every
+    grader's zip file.
 
-    Original:    "rubric1.extension"
-    After copy:  "rubric1__gradee_<id of student being graded>.extension"
+    When it is copied, the filename will be changed according to the following
+    scheme:
+
+    Original name:    "hwk1_rubric.abc"
+    After copy:       "hwk1_rubric__gradee_<gradee alias>.abc"
+
+    In the sample zip file structure shown above, the files named with the
+    pattern "hwk1_rubric__gradee_<alias>.docx" would all be the result of
+    adding the option "-r hwk1_rubric.docx" to the run of 'package' command
+    that created the zip file.
 
     This option can be given multiple times.
     """
 )
 @click.option(
-    '--grading-instructions', '-i',
+    '--per-grader', '-r', 'per_grader_files',
+    multiple=True,
     type=click.Path(exists=True, dir_okay=False,
                     readable=True, resolve_path=True),
     help="""
-    A path to a file containing grading instructions.  This is different from
-    rubric files.  Grading instructions are more general and apply to the whole
-    assignment.
+    A file which should be included once for each grader (like grading
+    instructions).  This file will be copied into the folder that contains all
+    the gradee submission directories in every grader's zip file.
 
-    If specified, this file will be placed at the top level of every created
-    zipfile.
+    When it is copied, the filename will be changed according to the following
+    scheme:
+
+    Original name:    "grading_instructions.abc"
+    After copy:       "grading_instructions__grader_<grader alias>.abc"
+
+    In the sample zip file structure shown above, the files named
+    "grading_instructions__grader_jkl321.docx" and
+    "self_evaluation__grader_jkl321.docx" would have come from adding "-r
+    grading_instructions.docx" and "-r self_evaluation.docx" to the run of the
+    'package' command that created the zipfile.
     """
 )
 @click.option(
     '--output-dir', '-d',
     type=click.Path(file_okay=False, writable=True, resolve_path=True),
     help="""
-    The directory into which the zipfiles should be placed.  It must be empty.
+    The directory into which the zipfiles should be placed.
 
-    By default, the program will create a directory with the same name as the
-    SUBMISSION-ZIP minus the file extension in the working directory of the
-    script.
+    By default, the created zip files will be placed in a directory created in
+    the working directory of the script with the same name as the
+    SUBMISSION-DIR with "grading_zips_for__" added to the beginning.
     """
 )
-def package(submission_zip, grading_assignment_file, rubrics,
-            grading_instructions, output_dir):
+def package(submission_dir, grading_assignment_file, per_gradee_files,
+            per_grader_files, output_dir):
     """
-    The files for each student's submission in the BBLearn assignment
-    submission zipfile indicated by SUBMISSION-ZIP are placed into their own
-    directories labelled with the student's id.  Any specified RUBRICs are then
-    copied into these directories.
+    SUBMISSION-DIR must be a directory where a BBLearn submission zip has been
+    unpacked with the 'unpack-submission' command.
 
-    A new set of directories is created to contain all the student submission
-    directories for a given grader.  These directories are labelled according
-    to the following scheme:
+    The GRADING-ASSIGNMENT-FILE must be a .csv file where there is a column
+    named "Grader".  There must also be one or more columns specifying who the
+    grader will grade (the 'gradees').  The names of the gradee columns should
+    be of the form "GradeeN" where "N" is a sequential integer starting at 1.
+    If there are is only one gradee column it can simply be named "Gradee".
+    All column names are case insensitive.
 
-        <grader's id>_grading_for_<assignment_name>
+    If you used an alias map when unpacking the BBLearn submission zip into
+    SUBMISSION-DIR, then the values in the columns of the
+    GRADING-ASSESSMENT-FILE must be aliases since that's how the student
+    submission directories were named.  If you didn't use an alias map, then
+    the values in the GRADING-ASSIGNMENT-FILE should be BBLearn usernames.
 
-    Where the assignment name comes from the name of the BBLearn submission
-    file minus the file extension.
+    A GRADING-ASSIGNMENT-FILE that is valid for use with this command may be
+    generated by using the command 'grading assign'.
 
-    The GRADING-ASSIGNMENT-FILE is then used to move the appropriate student
-    submission directories into the assigned grader's directory.
+    A zip file will be created for each grader specified in the
+    GRADING-ASSIGNMENT-FILE.  The zip file will be named according to the
+    following scheme:
+        <grader's alias>_grading_for_<assignment name>
+    Where the <assignment name> comes from the name of the SUBMISSION-DIR
 
-    Finally, any grading instructions are copied into the grader directories
-    and then the grader directories are zipped.
+    Each of these zip files will contain a directory with the same name as the
+    zip within which everything else will be contained.  This container
+    directory will contain copies of student submission directories of the
+    gradees designated for the grader the zip file is named after as well as a
+    copy of any file passed as a PER-GRADER-FILE.  Additionally, a copy of
+    every PER-GRADEE-FILE will be placed into each of the student submission
+    directories in the container directory.
 
-    The directory tree for a grader's zipfile might look like this:
+    This can be seen directly in the directory tree for a sample zip file for
+    the grader with the BBLearn username "jkl321" shown below.  This zip file
+    would have resulted from an invocation of this command like the following:
+    \b
+        divvy grading package hwk1 hwk1_grading_assignments.csv \\
+        -r grading_instructions.docx -r self_evaluation.docx \\
+        -e hwk1_rubric.docx
 
     \b
     jkl321_grading_for_hwk1.zip
     └── jkl321_grading_for_hwk1
-        ├── GRADING_INSTRUCTIONS.txt
+        ├── grading_instructions__grader_jkl321.docx
+        ├── self_evaluation__grader_jkl321.docx
         ├── ghi789
         │   ├── submission_file3.txt
         │   ├── submission_file2.txt
         │   ├── submission_file1.txt
-        │   ├── rubric_1__gradee_ghi789.json
-        │   └── rubric_2__gradee_ghi789.json
+        │   └── hwk1_rubric__gradee_ghi789.docx
         ├── def456
         │   ├── submission_file3.txt
         │   ├── submission_file2.txt
         │   ├── submission_file1.txt
-        │   ├── rubric_1__gradee_def456.json
-        │   └── rubric_2__gradee_def456.json
+        │   └── hwk1_rubric__gradee_def456.docx
         └── abc123
             ├── submission_file3.txt
             ├── submission_file2.txt
             ├── submission_file1.txt
-            ├── rubric_1__gradee_abc126.json
-            └── rubric_2__gradee_abc126.json
+            └── hwk1_rubric__gradee_abc126.docx
 
     """
-    if not is_zipfile(submission_zip):
-        print(f"Whoops, it seems that there is no zipfile at {submission_zip}")
+    submission_dir = Path(submission_dir)
+    per_grader_files = [] if not per_grader_files else per_grader_files
+    per_gradee_files = [] if not per_gradee_files else per_gradee_files
+
+    if not submission_dir.is_dir():
+        print("Whoops! {submission_dir} isn't a valid directory.")
         exit(1)
 
     if not output_dir:
-        (submission_path, submission_filename) = split(abspath(submission_zip))
-        # This is technically incorrect because the first "." is not guaranteed
-        # to be the file extension separator in any filename, but it should
-        # suffice for the submission filenames generated by BBLearn assuming
-        # instructors aren't including dots in their assignment names
-        output_dir = submission_filename.split('.')[0]
+        output_dir_name = 'grading_zips_for__' + submission_dir.name
+        output_dir = submission_dir.parent.joinpath(output_dir_name)
 
-    if not exists(output_dir):
+    if not output_dir.exists():
         print(f"Creating directory {output_dir}")
         mkdir(output_dir)
         print("Done!")
-    elif len(list(scandir(output_dir))) != 0:
+    elif len(list(output_dir.iterdir())) != 0:
         print(f"The directory {output_dir} is not empty!")
         exit(1)
 
-    print("\nUnzipping submission archive...")
-    with ZipFile(submission_zip) as z:
-        z.extractall(output_dir)
-        print("Done!")
-
-    print("Refiling submitted files into student submission directories...")
-    refile_files_by_submitter(output_dir)
+    # Copy submission_dir contents to output_dir
+    print("Gathering student submission directories... ", end="")
+    for student_submission_dir in submission_dir.iterdir():
+        copytree(student_submission_dir,
+                 output_dir.joinpath(student_submission_dir.name))
     print("Done!")
 
-    print("Distributing rubric files...")
-    assignment_name = basename(submission_zip).split('.')[0]
-    distribute_rubrics(output_dir, rubrics, assignment_name)
-    print("Done!")
-
-    print("Refiling student submission directories into grader directories...")
+    # Refile into grader directories
+    print("Copying student submission directories into grader directories... ",
+          end="")
+    # TODO change to .csv file, make this a function, and extract it to utils?
     with open(grading_assignment_file, 'r') as gaf:
         grading_assignments = load(gaf)
     gradee_to_graders = grading_assignments['gradee_to_graders']
-    unassigned_gradees = refile_submissions_by_grader(output_dir,
-                                                      gradee_to_graders,
-                                                      assignment_name)
+    unassigned_gradees = refile_submissions_for_graders(output_dir,
+                                                        gradee_to_graders)
     print("Done!")
 
-    print("Packaging grader directories...")
-    package_grader_dirs(output_dir, grading_instructions)
+    # Distribute per-grader and per-gradee files
+    print("Distributing per-grader and per-gradee files... ", end="")
+    distribute_grading_files(output_dir, per_grader_files, per_gradee_files)
+    print("Done!")
+
+    # Create zips
+    print("Packaging grader directories... ", end="")
+    package_grader_dirs(output_dir)
     print("Done!\n")
 
     if unassigned_gradees != []:
         print(unassigned_gradees_notice.format(len(unassigned_gradees)))
+        # TODO: List unassigned gradees
 
 
-def distribute_rubrics(output_dir, rubrics, assignment_name):
-    for gradee_entry in scandir(output_dir):
-        for rubric in rubrics:
-            (rubric_name, extensions) = basename(rubric).split('.', maxsplit=1)
-            rubric_copy_path = join(
-                gradee_entry.path,
-                f"{rubric_name}__gradee_{gradee_entry.name}.{extensions}"
-            )
-            copy(rubric, rubric_copy_path)
-
-
-def refile_submissions_by_grader(output_dir, gradee_to_graders,
-                                 assignment_name):
+def refile_submissions_for_graders(output_dir, gradee_to_graders):
+    grading_dir_suffix = f"grading_for_{output_dir.name.split('__')[-1]}"
     unassigned_gradees = []
-    for gradee_entry in scandir(output_dir):
-        gradee_id = gradee_entry.name
+    for gradee_path in output_dir.iterdir():
+        gradee_id = gradee_path.name
         grader_ids = gradee_to_graders.get(gradee_id)
 
         if not grader_ids:
             unassigned_gradees.append(gradee_id)
-            rmtree(gradee_entry.path)
+            rmtree(gradee_path)
             continue
 
         for grader_id in grader_ids:
-            grader_dir_name = f"{grader_id}_grading_for_{assignment_name}"
-            grader_dir_path = join(output_dir, grader_dir_name)
-            if not exists(grader_dir_path):
+            grader_dir_name = f"{grader_id}__{grading_dir_suffix}"
+            grader_dir_path = output_dir.joinpath(grader_dir_name)
+            if not grader_dir_path.exists():
                 mkdir(grader_dir_path)
-            copytree(gradee_entry.path,
-                     join(grader_dir_path, gradee_entry.name))
-        rmtree(gradee_entry.path)
+            copytree(gradee_path, grader_dir_path.joinpath(gradee_path.name))
+        rmtree(gradee_path)
 
     return unassigned_gradees
 
 
-def package_grader_dirs(output_dir, grading_instructions):
-    for grader_entry in scandir(output_dir):
-        if grading_instructions:
-            copy(grading_instructions, grader_entry.path)
+def distribute_grading_files(output_dir, per_grader_files, per_gradee_files):
+    # TODO: remove duplication
+    for grader_path in output_dir.iterdir():
+        # Distribute per gradee files
+        for gradee_path in grader_path.iterdir():
+            gradee_alias = gradee_path.name
+            for per_gradee_file in per_gradee_files:
+                per_gradee_path = Path(per_gradee_file)
+                new_name = append_in_file_name(per_gradee_path.name,
+                                               f"__gradee_{gradee_alias}")
+                copy(per_gradee_path, gradee_path.joinpath(new_name))
+
+        # Distribute grader files
+        grader_alias = grader_path.name.split('__')[0]  # TODO abstract
+        for per_grader_file in per_grader_files:
+            per_grader_path = Path(per_grader_file)
+            new_name = append_in_file_name(per_grader_path.name,
+                                           f"__grader_{grader_alias}")
+            copy(per_grader_path, grader_path.joinpath(new_name))
+
+
+def package_grader_dirs(output_dir):
+    for grader_path in output_dir.iterdir():
         make_archive(
-            grader_entry.path,
+            grader_path,
             'zip',
             root_dir=output_dir,
-            base_dir=grader_entry.name
+            base_dir=grader_path.name
         )
-        rmtree(grader_entry.path)
+        rmtree(grader_path)
+
+
+def append_in_file_name(file_name, appendage):
+    name, file_extensions = file_name.split('.', maxsplit=1)
+    return f"{name}{appendage}.{file_extensions}"

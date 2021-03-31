@@ -74,8 +74,8 @@ def send(packaged_grading_folder,
         zip_paths = list(pathlib.Path(packaged_grading_folder).iterdir())
         print(f"Attempting to send {len(zip_paths)} emails:")
         unsuccessful_sends = []
-        for zip_path in zip_paths:
-            student_email = zip_path.name.split('_')[0] + '@nau.edu'
+        for zip_path in sorted(zip_paths, key=lambda path: path.name):
+            student_email = zip_path.name.split('__')[0] + '@nau.edu'
             msg = EmailMessage()
             msg['To'] = student_email
             msg['From'] = from_address
@@ -88,7 +88,7 @@ def send(packaged_grading_folder,
                                    maintype=maintype,
                                    subtype=subtype,
                                    filename=zip_path.name)
-            print(f"\tSending to {student_email} ... ", end="")
+            print(f"\tSending to {student_email} ...\t", end="")
             send_result = iris.send_message(msg)
             if send_result == {}:
                 print("SUCCESS")
