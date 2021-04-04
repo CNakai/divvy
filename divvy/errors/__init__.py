@@ -1,0 +1,2 @@
+class DivvyError(Exception):
+    pass
