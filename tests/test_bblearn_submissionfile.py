@@ -1,5 +1,5 @@
 # TODO: do interface test for these a la Sandi Metz?
-from ..bblearn import SubmissionFile
+from divvy.bblearn import SubmissionFileFactory as SFF
 from pytest import fixture
 
 class SubmissionFileDouble:
@@ -7,12 +7,9 @@ class SubmissionFileDouble:
     submitted_on = '2021-03-17-12-08-23'
     submitted_by = 'smp549'
     submitted_as = 'Math quiz documentation.pdf'
-
-
-    @property
-    def name(self):
-        return "_".join([self.submitted_for, self.submitted_by, 'attempt',
-                         self.submitted_on, self.submitted_as])
+    bblearn_name = (
+        f"{submitted_for}_{submitted_by}_attempt_{submitted_on}_{submitted_as}"
+    )
 
 
 @fixture
@@ -22,11 +19,11 @@ def test_double():
 
 @fixture
 def test_submission_file(test_double):
-    return SubmissionFile(test_double.name)
+    return SFF.from_bblearn_filename(test_double.bblearn_name)
 
 
 def test_retrieves_bblearn_name(test_submission_file, test_double):
-    assert test_submission_file.name == test_double.name
+    assert test_submission_file.bblearn_name == test_double.bblearn_name
 
 
 def test_retrieves_name_as_submitted(test_submission_file, test_double):
