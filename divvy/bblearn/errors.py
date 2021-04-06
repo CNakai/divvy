@@ -1,6 +1,6 @@
 from divvy.errors import DivvyError
 
-class InvalidFilenameError(DivvyError):
+class InvalidBBLearnFilenameError(DivvyError):
     def __init__(self, filename, message=None):
         self.filename = filename
         if not message:

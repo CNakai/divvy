@@ -1,4 +1,4 @@
-from divvy.bblearn.errors import InvalidFilenameError
+from divvy.bblearn.errors import InvalidBBLearnFilenameError
 
 
 def segment(bblearn_filename):
@@ -17,7 +17,7 @@ def segment(bblearn_filename):
                                                                 maxsplit=1)
         timestamp, filename = timestamp_and_filename.split('_', maxsplit=1)
     except ValueError:
-        raise InvalidFilenameError(bblearn_filename)
+        raise InvalidBBLearnFilenameError(bblearn_filename)
 
     return {
         'submitted_for': assignment,

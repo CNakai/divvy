@@ -1,7 +1,7 @@
 from pytest import fixture
 from pytest import raises
 from divvy.bblearn import filename
-from divvy.bblearn.errors import InvalidFilenameError
+from divvy.bblearn.errors import InvalidBBLearnFilenameError
 
 
 def test_valid_bblearn_filename_is_segmentable(valid_bblearn_filename):
@@ -17,7 +17,6 @@ def test_segment(valid_bblearn_filename, bblearn_filename_segments):
     assert segments == bblearn_filename_segments
 
 
-def test_segment_raises_InvalidFilenameError_on_failure(
-        invalid_bblearn_filename):
-    with raises(InvalidFilenameError):
+def test_segment_raises_error_with_invalid_filename(invalid_bblearn_filename):
+    with raises(InvalidBBLearnFilenameError):
         filename.segment(invalid_bblearn_filename)
