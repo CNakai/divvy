@@ -4,6 +4,7 @@ from pathlib import Path
 from sys import exit
 from zipfile import is_zipfile, ZipFile
 from .bblearn_submission_utils import refile_files_by_submitter
+from .bblearn.submissionfile import SubmissionFile
 
 
 @click.command()
