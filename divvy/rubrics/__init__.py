@@ -16,4 +16,4 @@ __rubrics.add_command(evaluate)
 __rubrics.add_command(synthesize)
 # __rubrics.add_command(send)
 
-command_group = [__rubrics]
+command_group = __rubrics

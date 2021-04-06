@@ -14,4 +14,4 @@ __grading.add_command(assign)
 __grading.add_command(package)
 __grading.add_command(send)
 
-command_group = [__grading]
+command_group = __grading
