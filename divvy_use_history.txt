@@ -1,0 +1,163 @@
+: 1608676875:0;git add divvy/ plan.org setup.py
+: 1608681661:0;divvy grading assign --hel
+: 1608683136:0;divvy grading assign hwk4.zip
+: 1608683288:0;divvy grading assign hwk4.zip -n 3
+: 1608683468:0;divvy grading assign hwk4.zip -n 3 -o grading_groups.json
+: 1608683662:0;divvy grading assign hwk4.zip -n 3 -o grading_groups
+: 1608683676:0;flake8 divvy/grading/assign.py
+: 1608683681:0;flake8 divvy/grading/util.py
+: 1608683692:0;git add divvy
+: 1608836673:0;cd workspace/peer_grading/divvy/grading
+: 1608847230:0;flake8 ../divvy/grading/package.py
+: 1608851442:0;divvy grading package hwk2.zip hwk2_grading_groups.json -r some_rubric.json -r another_rubric.json -i ginstr.txt
+: 1610223104:0;divvy grading package hwk2.zip hwk2_grading_groups.json -i ginstr.txt -r some_rubric.json
+: 1610223716:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m "It's... happening\
+: 1610223722:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m "It's... happening"
+: 1610223922:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m "It's... alive
+: 1610223931:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m "It's... alive\
+: 1610224076:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m `It's... alive!`
+: 1610224100:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s "Testy sendy" -m 'Its... alive!'
+: 1610224847:0;divvy grading send hwk2 -u cnm62 -p "6of1,1/2dozenoftheOther" -f "nakai.mcaddis@nau.edu" -s 'Better logging' -m 'Yeah baby!'
+: 1615312984:0;divvy grading
+: 1615313006:0;divvy grading assign hwk2.zip
+: 1615313090:0;divvy grading assign hwk2.zip -n 3
+: 1615317180:0;cd divvy/grading
+: 1615336607:0;ls divvy/grading/.gitignore
+: 1615336612:0;cat divvy/grading/.gitignore
+: 1615336737:0;divvy grading package hwk2.zip hwk2_grading_groups.json -r hwk2_rubric.toml -i OPEN_ME_IN_GEDIT_OR_VIM_FIRST.txt
+: 1615338958:0;divvy grading send hwk2
+: 1615403111:0;git add divvy/grading/.gitignore
+: 1615403141:0;git diff divvy/grading/__init__.py
+: 1615578716:0;divvy grading assign test.zip
+: 1615578754:0;divvy grading assign test.zip -n 3
+: 1615579156:0;divvy grading package test.zip test_grading_groups.json
+: 1615579248:0;git add divvy/grading/
+: 1615579260:0;git add divvy/bblearn_submission_utils.py
+: 1615589122:0;divvy rubrics evaluate --help
+: 1615589267:0;divvy rubrics evaluate hwk2_rubrics `Homework 2: Make a gamebook [Total Pts: 24 Score] |3396833`
+: 1615591177:0;divvy rubrics evaluate hwk2_rubrics 'Homework 2: Make a gamebook [Total Pts: 24 Score] |3396833'
+: 1615591881:0;diff ../../divvy/rubrics/synthesize.py ../../divvy/rubrics/evaluate.py
+: 1615591929:0;divvy rubrics collate hwk2_rubrics.zip hwk2_grading_groups.json
+: 1615591969:0;divvy rubrics synthesize hwk2_rubrics 'Homework 2: Make a gamebook [Total Pts: 24 Score] |3396833'
+: 1615592671:0;divvy rubrics evaluate hwk2_rubrics 'Homework 2: Grading (Rubric Submission) [Total Pts: 3 Letter] |3439980'
+: 1615909336:0;divvy grading send send_rubrics
+: 1616091509:0;cd workspace/peer_grading/divvy
+: 1616107131:0;divvy grading assign --help
+: 1616108312:0;divvy grading assign hwk3
+: 1616109320:0;cd ../../divvy/grading
+: 1616109960:0;divvy grading package hwk3
+: 1616111393:0;divvy grading package hwk3 hwk3_grading_assignments.json
+: 1616111748:0;divvy grading send grading_zips_for__hwk3
+: 1616111994:0;divvy grading send grading_zips_for__hwk3 -u cnm62 -p'6of1,1/2dozenoftheOther' -f 'nakai.mcaddis@nau.edu' -s 'blah' -m 'blah'
+: 1616117211:0;divvy grading send -u cnm62 -p'6of1,1/2dozenoftheOther' -f'nakai.mcaddis@nau.edu' -s'CS126: Homework 3 grading' -m'Greetings!\
+: 1616118997:0;divvy unpack-submission hwk3.zip
+: 1616119022:0;divvy grading assign hwk3 -n 3
+: 1616119053:0;divvy grading package hwk3 hwk3_grading_assignments.json -r grading_instructions.txt -e hwk3_rubric.toml
+: 1616119129:0;divvy grading send -u cnm62 -p'6of1,1/2dozenoftheOther' -f'nakai.mcaddis@nau.edu' -s'CS126: Homework 3 grading (for real!)' -m'Greetings!\
+: 1617227701:0;git diff divvy/bblearn_submission_utils.py
+: 1617228439:0;mv divvy/divvy/bblearn divvy
+: 1617228445:0;rm divvy/divvy -r
+: 1617228976:0;rm ../../divvy/bblearn/submission_file.py
+: 1617406131:0;cd ../../divvy/bblearn
+: 1617407776:0;mv test divvy
+: 1617481546:0;mv --target-directory=src bblearn.py cli.py divvy.py grading/ __init__.py rubrics submission submissionfile_test.py unpack_submission.py
+: 1617481580:0;mv divvy src
+: 1617481586:0;mv peer_grading divvy
+: 1617482068:0;mkdir divvy
+: 1617482075:0;mv src divvy
+: 1617482120:0;mv divvy/src/submissionfile_test.py tests/test_bblearn_submissionfile.py
+: 1617484041:0;cat workspace/divvy/setup.py
+: 1617484249:0;rm divvy.egg-info
+: 1617484256:0;rm divvy.egg-info -rf
+: 1617485388:0;cat workspace/divvy/divvy/divvy.py
+: 1617485390:0;cat workspace/divvy/divvy/cli.py
+: 1617485587:0;rm divvy.py
+: 1617514753:0;mv divvy/filename divvy/bblearn/
+: 1617514761:0;ls divvy/bblearn
+: 1617514809:0;mkdir divvy/bblearn/filename
+: 1617514818:0;touch divvy/bblearn/filename/__init__.py
+: 1617514852:0;rm divvy/bblearn.py
+: 1617669805:0;find PICKUP divvy
+: 1617669819:0;find divvy PICKUP
+: 1617682277:0;divvy unpack-submission
+: 1617682630:0;git diff ../../divvy/unpack_submission.py
+: 1617682641:0;git diff ../../divvy/unpack_submission.py | grep 'y'
+: 1617682649:0;git diff ../../divvy/unpack_submission.py | grep 'y/n'
+: 1617682658:0;git diff ../../divvy/unpack_submission.py | grep 'y\/n'
+: 1617682662:0;git diff ../../divvy/unpack_submission.py | grep 'input'
+: 1617682676:0;git diff ../../divvy/unpack_submission.py | grep 'input' --context 3
+: 1617745829:0;divvy attempts
+: 1617745852:0;divvy attempts unpack
+: 1617747865:0;flake8 ~/workspace/divvy/divvy/attempts/assignmentattempts.py
+: 1617747878:0;flake8 ~/workspace/divvy/divvy/attempts/errors.py
+: 1617747890:0;flake8 ~/workspace/divvy/divvy/attempts/attemptfile.py
+: 1617747966:0;flake8 ~/workspace/divvy/divvy/attempts/__init__.py
+: 1617747994:0;flake8 ~/workspace/divvy/divvy/attempts/cli.py
+: 1617748877:0;flake8 ~/workspace/divvy/divvy/attempts/attempt.py
+: 1617755450:0;divvy
+: 1617765773:0;cd divvy/actual_grading/cs126_hwk3
+: 1617768144:0;divvy attempts unpack hwk3.zip -d testo
+: 1618679355:0;cd ~/workspace/divvy
+: 1618680521:0;divvy attempts unpack grading_hwk2_redo.zip
+: 1618944822:0;cd workspace/divvy/actual_grading/cs126_hwk3/
+: 1619028059:0;tree workspace/divvy/actual_grading
+: 1619028068:0;tree workspace/divvy/actual_grading/cs126_hwk3/testo
+: 1619028361:0;cd divvy/actual_grading/cs126_hwk3/testo
+: 1619033533:0;divvy grading assign
+: 1619033604:0;divvy grading assign hwk3 
+: 1619034015:0;divvy grading assign hwk3 3
+: 1619034081:0;cd workspace/divvy/divvy
+: 1619039402:0;divvy grading package
+: 1619117982:0;cd workspace/divvy/actual_grading/cs126_hwk3/testo
+: 1619120209:0;divvy grading create-map --help
+: 1619120228:0;divvy grading package -r instructions.toml -e rubric.toml -m hwk3_grading_assignment.json hwk3
+: 1619120340:0;divvy grading package -r instructions.toml -e rubric.toml hwk3
+: 1619120349:0;divvy grading package -r instructions.toml -e rubric.toml -n 3 hwk3
+: 1619469127:0;cd divvy/
+: 1619473040:0;ls workspace/divvy/divvy
+: 1619474344:0;divvy --help
+: 1619474351:0;divvy attempts --help
+: 1619474364:0;divvy attempts unpack --help
+: 1619474465:0;divvy grading package hwk6
+: 1619474475:0;divvy grading package hwk6 -3
+: 1619475010:0;divvy grading package hwk6 -n 3
+: 1619475465:0;divvy grading --help
+: 1619475473:0;divvy grading send --help
+: 1619475496:0;divvy grading send grading_zips_for__hwk6 -d -e email.toml
+: 1619477772:0;divvy grading package --help
+: 1619477803:0;divvy grading package -m hwk6_grading_map.json -e hwk6_rubric.toml -r grading_instructions.txt
+: 1619477809:0;divvy grading package -m hwk6_grading_map.json -e hwk6_rubric.toml -r grading_instructions.txt hwk6
+: 1619478223:0;divvy attempts unpack hwk6.zip
+: 1619478249:0;divvy grading package -e hwk6_rubric.toml -r grading_instructions.txt hwk6
+: 1619478255:0;divvy grading package -e hwk6_rubric.toml -r grading_instructions.txt -n 3 hwk6
+: 1619478467:0;divvy grading send grading_zips_for__hwk6 -e email.toml -d
+: 1619478473:0;divvy grading send grading_zips_for__hwk6 -e email.toml
+: 1619635450:0;cp Makefile ~/workspace/divvy/actual_grading/cs126_hwk5
+: 1619635468:0;cp ../evaluations_to_csv.py ~/workspace/divvy/actual_grading/cs126_hwk5
+: 1619635506:0;cp ../hwk_renamer.py ~/workspace/divvy/actual_grading/cs126_hwk5
+: 1619635521:0;cd ~/workspace/divvy/actual_grading/cs126_hwk5
+: 1619637405:0;divvy attempts unpack hwk5.zip -d submissions
+: 1619758208:0;cd divvy
+: 1619758222:0;grep from_divvy_assignment * -R
+: 1619758244:0;grep Assignment\.from_divvy_assignment * -R
+: 1620166962:0;divvy rubrics synthesize 
+: 1620166967:0;divvy rubrics synthesize --help
+: 1620167412:0;divvy attempts unpack hwk3_rubrics.zip
+: 1620167423:0;divvy rubrics synthesize hwk3_rubrics "Homework 3: Math quiz modifications [Total Pts: 21 Score] |3441103" hwk3_grading_map.json exemplar_rubric.toml
+: 1620168228:0;cd workspace/divvy/actual_grading/cs126_hwk3/hwk3_rubrics
+: 1620168851:0;divvy attempts unpack hwk3.zip
+: 1620173668:0;divvy rubrics synthesize hwk3_rubrics "Homework 3: Math quiz modifications [Total Pts: 21 Score] |3441103" hwk3_grading_map.json exemplar_rubric.toml grades.csv
+: 1620174281:0;divvy attempts unpack hwk6_rubrics.zip
+: 1620174470:0;divvy rubrics synthesize hwk6_rubrics "Homework 6: Lights Out [Total Pts: 36 Score] |3455130" hwk6_grading_map.json exemplar_rubric.toml grades.csv
+: 1620179204:0;divvy attempts unpack hwk5.zip
+: 1620179817:0;divvy attempts unpack slackers.zip
+: 1620252999:0;cd workspace/divvy/actual_grading/cs126_hwk6/hwk6/bjc424_2021-04-24-15-25-23
+: 1620320343:0;cd workspace/divvy
+: 1620321302:0;cd workspace/divvy/actual_grading/cs126_hwk5/hwk5/gml225/
+: 1620340025:0;cd workspace/divvy/actual_grading/cs126_hwk5/hwk5/can293
+: 1620341330:0;cd workspace/divvy/actual_grading
+: 1620341342:0;. /home/nakai/.cache/pypoetry/virtualenvs/divvy-T4WKMHIH-py3.9/bin/activate
+: 1628880906:0;cd workspace/divvy
+: 1628881118:0;grep divvy ~/.bash_history
+: 1628881127:0;grep divvy ~/.zhistory
+: 1628881182:0;grep divvy ~/.zhistory > divvy_use_history.txt
