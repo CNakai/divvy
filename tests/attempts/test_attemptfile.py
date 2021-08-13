@@ -2,17 +2,11 @@
 from pytest import fixture
 from divvy.attempts import AttemptFile
 from divvy.bblearn import filename
+from .doubles import AttemptFileDouble
 
 @fixture
-def test_double(valid_bblearn_filename, bblearn_filename_segments):
-    class AttemptFileDouble:
-        submitted_for = bblearn_filename_segments['submitted_for']
-        submitted_on = bblearn_filename_segments['submitted_on']
-        submitted_by = bblearn_filename_segments['submitted_by']
-        submitted_as = bblearn_filename_segments['submitted_as']
-        bblearn_name = valid_bblearn_filename
-
-    return AttemptFileDouble()
+def test_double(bblearn_filename_segments, valid_bblearn_filename):
+    return AttemptFileDouble(**bblearn_filename_segments, valid_bblearn_filename)
 
 
 @fixture

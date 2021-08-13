@@ -1,17 +1,5 @@
-import click
-from .assign import assign
-from .package import package
-from .send import send
+from . import cli
+from . import gradingmap
 
-
-@click.group(name='grading')
-def __grading():
-    """Commands for preparing and sending grading assignments"""
-    pass
-
-
-__grading.add_command(assign)
-__grading.add_command(package)
-__grading.add_command(send)
-
-command_group = __grading
+command_group = cli.command_group
+Gradingmap = gradingmap.GradingMap
